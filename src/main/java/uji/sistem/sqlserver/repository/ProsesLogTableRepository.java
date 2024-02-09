@@ -19,7 +19,7 @@ public class ProsesLogTableRepository {
     }
 
     public ProsesLogTable saveProsesLogTable(ProsesLogTable proseslogtable) {
-        String sql = "INSERT INTO Proses_log_line (Completed, CMPNYCD, RCVNO, RX_ARRANGEMENT_NUMBER, PROCESS_LOG_COUNT,\n" +
+        String sql = "INSERT INTO Proses_log_table (Completed, CMPNYCD, RCVNO, RX_ARRANGEMENT_NUMBER, PROCESS_LOG_COUNT,\n" +
                 "PASS_DATE, PASS_TIME, PRODUCTION_COMPANY_CODE, PRODUCTION_PLACE_CODE,\n" +
                 "BREAKAGE_COUNT, BREAKAGE_ID, TOTDETLINE, AMDDATE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,

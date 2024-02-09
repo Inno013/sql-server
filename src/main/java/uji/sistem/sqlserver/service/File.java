@@ -135,8 +135,23 @@ public class File {
         List<ProsesLogTable> logTables = new ArrayList<>();
         for (String tables: data) {
             ProsesLogTable logTable = new ProsesLogTable();
+            String[] coloms = tables.split(",");
+            logTable.setCompleted(coloms[0]); 
+            logTable.setCmpnycd(coloms[1]); 
+            logTable.setRcvno(coloms[2]); 
+            logTable.setRxArrangementNumber(coloms[3]); 
+            logTable.setProcessLogCount(Integer.parseInt(coloms[4])); 
+            logTable.setPassDate(coloms[5]); 
+            logTable.setPassTime(coloms[6]); 
+            logTable.setProductionCompanyCode(coloms[7]); 
+            logTable.setProductionPlaceCode(coloms[8]); 
+            logTable.setBreakageCount(Integer.parseInt(coloms[9])); 
+            logTable.setBreakageId(coloms[10]); 
+            logTable.setTotdetline(Integer.parseInt(coloms[11])); 
+            logTable.setAmddate(LocalDateTime.parse(coloms[12], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSS")));
+
+            logTables.add(logTable);
         }
         return logTables;
     }
-
 }
