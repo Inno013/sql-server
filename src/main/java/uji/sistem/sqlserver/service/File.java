@@ -2,6 +2,7 @@ package uji.sistem.sqlserver.service;
 
 import org.springframework.stereotype.Service;
 import uji.sistem.sqlserver.model.ProsesLogLine;
+import uji.sistem.sqlserver.model.ProsesLogTable;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -35,7 +36,7 @@ public class File {
         }
     }
 
-    public List<ProsesLogLine> ubahKeProsesLogLine(ArrayList<String> data){
+    public List<ProsesLogLine> ubahKeProsesLogLines(ArrayList<String> data){
         List<ProsesLogLine> logLines = new ArrayList<>();
         for (String line: data){
             ProsesLogLine logLine  = new ProsesLogLine();
@@ -128,6 +129,14 @@ public class File {
             logLines.add(logLine);
         }
         return logLines;
+    }
+
+    public List<ProsesLogTable> ubahKeProsesLogTables(ArrayList<String> data){
+        List<ProsesLogTable> logTables = new ArrayList<>();
+        for (String tables: data) {
+            ProsesLogTable logTable = new ProsesLogTable();
+        }
+        return logTables;
     }
 
 }

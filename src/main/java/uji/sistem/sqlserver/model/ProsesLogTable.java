@@ -3,6 +3,8 @@ import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 @Scope("prototype")
 @Data
@@ -20,5 +22,5 @@ public class ProsesLogTable {
     private Integer breakageCount;
     private String breakageId;
     private Integer totdetline;
-    private java.sql.Timestamp amddate;
+    private LocalDateTime amddate;
 }
