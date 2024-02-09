@@ -3,14 +3,12 @@ package uji.sistem.sqlserver;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.jdbc.core.JdbcTemplate;
-import uji.sistem.sqlserver.model.Mahasiswa;
-import uji.sistem.sqlserver.service.ReadFile;
+import uji.sistem.sqlserver.model.ProsesLogLine;
+import uji.sistem.sqlserver.service.File;
 import uji.sistem.sqlserver.service.SqlServerService;
 
-import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication
 //@ComponentScan(basePackages = "uji.sistem.sqlserver.DatabaseConfig.java")
@@ -20,20 +18,22 @@ public class SqlserverServiceApplication {
 
 		ApplicationContext context = SpringApplication.run(SqlserverServiceApplication.class, args);
 
-//		Mahasiswa mahasiswa = context.getBean(Mahasiswa.class);
-//
-//		mahasiswa.setNim("6733004");
-//
-//		SqlServerService service = context.getBean(SqlServerService.class);
-//		service.saveMahasiswa(mahasiswa);
-//		for(Mahasiswa mahasiswa1 :service.getAllMahasiswa()){
-//
-//			System.out.println(mahasiswa1.getId_mhs());
-//			System.out.println(mahasiswa1.getNama());
-//			System.out.println(mahasiswa1.getNim());
-//		}
-		ReadFile file = context.getBean(ReadFile.class);
+		ProsesLogLine logLine = context.getBean(ProsesLogLine.class);
+//		logLine.set
+		File file = context.getBean(File.class);
 
-		file.readFile();
+		List<ProsesLogLine> logLines = file.ubahKeProsesLogLine(file.readFile("AA30ProcessLogLine_1afc1d43-3fe0-4b34-9ad9-6448127ef136.csv"));
+//		System.out.println(file.readFile("AA30ProcessLogLine_1afc1d43-3fe0-4b34-9ad9-6448127ef136.csv"));
+//		System.out.println(logLines);
+
+		SqlServerService service = context.getBean(SqlServerService.class);
+		int i = 0;
+		for(ProsesLogLine log : logLines){
+			service.saveProsesLogLine(log);
+			if(i == 4){
+				break;
+			}
+			i++;
+		}
 	}
 }
