@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 @Component
-@Scope("prototype")
 @Data
 public class ProsesLogTable {
     private Long id;
