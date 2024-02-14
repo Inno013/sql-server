@@ -14,13 +14,17 @@ public class SqlServerController {
     @Autowired
     private FileService service;
 
-    @PostMapping(value = "/logline")
+    @PostMapping(value = "/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file){
         if(service.cekCsvFormat(file)){
-            service.prosesDanSaveDataLine(file);
+            String respon = service.prosesDanSaveData(file);
+            if(respon.contains("Masukan file")){
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                        .body(respon);
+            }
             return ResponseEntity.status(HttpStatus.OK)
-                    .body("Upload File Sukses " + file.getOriginalFilename());
+                    .body(respon);
         }
-        return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Tolong unggah file CSV");
+        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body("Tolong unggah file CSV");
     }
 }

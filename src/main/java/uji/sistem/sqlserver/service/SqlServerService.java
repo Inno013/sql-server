@@ -33,8 +33,10 @@ public class SqlServerService {
         return prosesLogTableRepository.getAllProsesLogTable() ;
     }
 
-    public ProsesLogTable saveProsesLogTable(ProsesLogTable proseslogtable) {
-        return prosesLogTableRepository.saveProsesLogTable(proseslogtable);
+    public void saveProsesLogTable(List<ProsesLogTable> prosesLogTables) {
+        for (ProsesLogTable logTable : prosesLogTables){
+            prosesLogTableRepository.saveProsesLogTable(logTable);
+        }
     }
 
 }

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uji.sistem.sqlserver.model.ProsesLogLine;
+import uji.sistem.sqlserver.model.ProsesLogTable;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -26,12 +27,22 @@ public class FileService {
         return true;
     }
 
-    public  void  prosesDanSaveDataLine(MultipartFile file){
+    public  String prosesDanSaveData(MultipartFile file){
         try{
-            List<ProsesLogLine> logLines = CsvKeLogLines(file.getInputStream());
-            service.saveProsesLogLine(logLines);
+            if(file.getOriginalFilename().contains("ProcessLogLine")){
+                List<ProsesLogLine> logLines = CsvKeLogLines(file.getInputStream());
+                service.saveProsesLogLine(logLines);
+                return "File Proses Log Line Berhasil di save ke database";
+            }else if(file.getOriginalFilename().contains("ProcessLogTable")){
+                List<ProsesLogTable> logTables = CsvKeLogTables(file.getInputStream());
+                service.saveProsesLogTable(logTables);
+                return "File Proses Log Table Berhasil di save ke database";
+            }else {
+                return  "Masukan file Proses Log Line atau Proses Log Table";
+            }
         } catch (IOException e){
             e.printStackTrace();
+            return e.getMessage();
         }
     }
 
@@ -137,27 +148,35 @@ public class FileService {
         return null;
     }
 
-//    public List<ProsesLogTable> ubahKeProsesLogTables(ArrayList<String> data){
-//        List<ProsesLogTable> logTables = new ArrayList<>();
-//        for (String tables: data) {
-//            ProsesLogTable logTable = new ProsesLogTable();
-//            String[] coloms = tables.split(",");
-//            logTable.setCompleted(coloms[0]);
-//            logTable.setCmpnycd(coloms[1]);
-//            logTable.setRcvno(coloms[2]);
-//            logTable.setRxArrangementNumber(coloms[3]);
-//            logTable.setProcessLogCount(Integer.parseInt(coloms[4]));
-//            logTable.setPassDate(coloms[5]);
-//            logTable.setPassTime(coloms[6]);
-//            logTable.setProductionCompanyCode(coloms[7]);
-//            logTable.setProductionPlaceCode(coloms[8]);
-//            logTable.setBreakageCount(Integer.parseInt(coloms[9]));
-//            logTable.setBreakageId(coloms[10]);
-//            logTable.setTotdetline(Integer.parseInt(coloms[11]));
-//            logTable.setAmddate(LocalDateTime.parse(coloms[12], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSS")));
-//
-//            logTables.add(logTable);
-//        }
-//        return logTables;
-//    }
+    public List<ProsesLogTable> CsvKeLogTables(InputStream data) {
+        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(data, "UTF-8"));
+             CSVParser csvParser = new CSVParser(fileReader,
+                     CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());
+        ) {
+            List<CSVRecord> records = csvParser.getRecords();
+            List<ProsesLogTable> logTables = new ArrayList<ProsesLogTable>();
+            for (CSVRecord record : records) {
+                ProsesLogTable logTable = new ProsesLogTable(
+                        record.get("Completed"),
+                        record.get("CMPNYCD"),
+                        record.get("RCVNO"),
+                        record.get("RX_ARRANGEMENT_NUMBER"),
+                        Integer.parseInt(record.get("PROCESS_LOG_COUNT")),
+                        record.get("PASS_DATE"),
+                        record.get("PASS_TIME"),
+                        record.get("PRODUCTION_COMPANY_CODE"),
+                        record.get("PRODUCTION_PLACE_CODE"),
+                        Integer.parseInt(record.get("BREAKAGE_COUNT")),
+                        record.get("BREAKAGE_ID"),
+                        Integer.parseInt(record.get("TOTDETLINE")),
+                        LocalDateTime.parse(record.get("AMDDATE"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSS")));
+
+                logTables.add(logTable);
+            }
+            return logTables;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

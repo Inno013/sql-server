@@ -1,5 +1,7 @@
 package uji.sistem.sqlserver.model;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -7,6 +9,8 @@ import java.time.LocalDateTime;
 
 @Component
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProsesLogTable {
     private Long id;
     private String completed;
@@ -22,4 +26,20 @@ public class ProsesLogTable {
     private String breakageId;
     private Integer totdetline;
     private LocalDateTime amddate;
+
+    public ProsesLogTable(String completed, String cmpnycd, String rcvno, String rxArrangementNumber, Integer processLogCount, String passDate, String passTime, String productionCompanyCode, String productionPlaceCode, Integer breakageCount, String breakageId, Integer totdetline, LocalDateTime amddate) {
+        this.completed = completed;
+        this.cmpnycd = cmpnycd;
+        this.rcvno = rcvno;
+        this.rxArrangementNumber = rxArrangementNumber;
+        this.processLogCount = processLogCount;
+        this.passDate = passDate;
+        this.passTime = passTime;
+        this.productionCompanyCode = productionCompanyCode;
+        this.productionPlaceCode = productionPlaceCode;
+        this.breakageCount = breakageCount;
+        this.breakageId = breakageId;
+        this.totdetline = totdetline;
+        this.amddate = amddate;
+    }
 }
