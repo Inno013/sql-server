@@ -1,10 +1,11 @@
 package uji.sistem.sqlserver.service;
 
+
 import org.springframework.stereotype.Service;
-import uji.sistem.sqlserver.repository.ProsesLogLineRepository;
-import uji.sistem.sqlserver.repository.ProsesLogTableRepository;
 import uji.sistem.sqlserver.model.ProsesLogLine;
 import uji.sistem.sqlserver.model.ProsesLogTable;
+import uji.sistem.sqlserver.repository.ProsesLogLineRepository;
+import uji.sistem.sqlserver.repository.ProsesLogTableRepository;
 
 import java.util.List;
 
@@ -27,7 +28,6 @@ public class SqlServerService {
             prosesLogLineRepository.saveProsesLogLine(logLine);
         }
     }
-
 
     public List<ProsesLogTable> getAllProsesLogTable() {
         return prosesLogTableRepository.getAllProsesLogTable() ;

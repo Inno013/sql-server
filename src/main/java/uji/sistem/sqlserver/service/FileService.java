@@ -1,13 +1,19 @@
 package uji.sistem.sqlserver.service;
 
-import org.apache.commons.csv.*;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uji.sistem.sqlserver.model.ProsesLogLine;
 import uji.sistem.sqlserver.model.ProsesLogTable;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -19,41 +25,41 @@ public class FileService {
     @Autowired
     private SqlServerService service;
 
-    public boolean cekCsvFormat(MultipartFile file){
-        String type = "text/csv";
-        if(!type.equals(file.getContentType())) {
-            return false;
+    public List<MultipartFile> cekCsvFormat(List<MultipartFile> files){
+        List<MultipartFile> fileList = new ArrayList<>();
+         for(MultipartFile file : files){
+            String type = "text/csv";
+            if(type.equals(file.getContentType())){
+                fileList.add(file);
+            }
         }
-        return true;
+        return fileList;
     }
 
-    public  String prosesDanSaveData(MultipartFile file){
+    public void prosesDanSaveData(MultipartFile file){
         try{
             if(file.getOriginalFilename().contains("ProcessLogLine")){
-                List<ProsesLogLine> logLines = CsvKeLogLines(file.getInputStream());
+                List<ProsesLogLine> logLines = csvKeLogLines(file.getInputStream());
                 service.saveProsesLogLine(logLines);
-                return "File Proses Log Line Berhasil di save ke database";
             }else if(file.getOriginalFilename().contains("ProcessLogTable")){
-                List<ProsesLogTable> logTables = CsvKeLogTables(file.getInputStream());
+                List<ProsesLogTable> logTables = csvKeLogTables(file.getInputStream());
                 service.saveProsesLogTable(logTables);
-                return "File Proses Log Table Berhasil di save ke database";
-            }else {
-                return  "Masukan file Proses Log Line atau Proses Log Table";
             }
-        } catch (IOException e){
+        } catch (Exception e){
             e.printStackTrace();
-            return e.getMessage();
         }
     }
 
-    public List<ProsesLogLine> CsvKeLogLines(InputStream data){
-        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(data, "UTF-8"));
-            CSVParser csvParser = new CSVParser(fileReader,
-                    CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());
-        ){
+
+    public List<ProsesLogLine> csvKeLogLines(InputStream data) throws IOException {
+        List<ProsesLogLine> result;
+        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(data, StandardCharsets.UTF_8));
+             CSVParser csvParser = new CSVParser(fileReader,
+                     CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim())
+        ) {
             List<CSVRecord> records = csvParser.getRecords();
-            List<ProsesLogLine> logLines = new ArrayList<ProsesLogLine>();
-            for(CSVRecord record : records){
+            List<ProsesLogLine> logLines = new ArrayList<>();
+            for (CSVRecord record : records) {
                 ProsesLogLine logLine = new ProsesLogLine(
                         record.get("CMPNYCD"),
                         record.get("RCVNO"),
@@ -141,20 +147,22 @@ public class FileService {
 
                 logLines.add(logLine);
             }
-            return logLines;
-        }catch (IOException e){
+            result = logLines;
+        } catch (IOException e) {
             e.printStackTrace();
+            throw e;
         }
-        return null;
+        return result;
     }
 
-    public List<ProsesLogTable> CsvKeLogTables(InputStream data) {
-        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(data, "UTF-8"));
-             CSVParser csvParser = new CSVParser(fileReader,
-                     CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());
+    public List<ProsesLogTable> csvKeLogTables(InputStream data) throws IOException{
+        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(data, StandardCharsets.UTF_8));
+             CSVParser csvParser = new CSVParser(fileReader, CSVFormat.DEFAULT
+                     .withFirstRecordAsHeader()
+                     .withIgnoreHeaderCase().withTrim())
         ) {
             List<CSVRecord> records = csvParser.getRecords();
-            List<ProsesLogTable> logTables = new ArrayList<ProsesLogTable>();
+            List<ProsesLogTable> logTables = new ArrayList<>();
             for (CSVRecord record : records) {
                 ProsesLogTable logTable = new ProsesLogTable(
                         record.get("Completed"),
@@ -176,7 +184,7 @@ public class FileService {
             return logTables;
         } catch (IOException e) {
             e.printStackTrace();
+            throw e;
         }
-        return null;
     }
 }
