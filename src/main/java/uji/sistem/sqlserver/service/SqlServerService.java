@@ -2,6 +2,8 @@ package uji.sistem.sqlserver.service;
 
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import uji.sistem.sqlserver.advice.TrackExecutionTime;
 import uji.sistem.sqlserver.model.ProsesLogLine;
 import uji.sistem.sqlserver.model.ProsesLogTable;
 import uji.sistem.sqlserver.repository.ProsesLogLineRepository;
@@ -23,6 +25,7 @@ public class SqlServerService {
         return prosesLogLineRepository.getAllProsesLogLine() ;
     }
 
+    @TrackExecutionTime
     public void saveProsesLogLine(List<ProsesLogLine> proseslogline) {
         for(ProsesLogLine logLine : proseslogline){
             prosesLogLineRepository.saveProsesLogLine(logLine);
@@ -33,6 +36,7 @@ public class SqlServerService {
         return prosesLogTableRepository.getAllProsesLogTable() ;
     }
 
+    @TrackExecutionTime
     public void saveProsesLogTable(List<ProsesLogTable> prosesLogTables) {
         for (ProsesLogTable logTable : prosesLogTables){
             prosesLogTableRepository.saveProsesLogTable(logTable);
