@@ -34,6 +34,7 @@ public class ProsesLogLineRepository {
     }
 
     @Transactional
+    @TrackExecutionTime
     public void saveProsesLogLine(ProsesLogLine proseslogline) {
         try {
             String sql = "INSERT INTO Proses_log_line (CMPNYCD, RCVNO, RX_ARRANGEMENT_NUMBER, PROCESS_LOG_COUNT, LENS_RL_TYPE, \n" +

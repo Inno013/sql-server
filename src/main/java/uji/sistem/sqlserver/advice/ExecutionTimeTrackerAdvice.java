@@ -1,5 +1,6 @@
 package uji.sistem.sqlserver.advice;
 
+import jakarta.annotation.PreDestroy;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExecutionTimeTrackerAdvice {
 
+    private long totalExecutionTime = 0;
+    private long totalExecutions = 0;
     Logger logger = LoggerFactory.getLogger(ExecutionTimeTrackerAdvice.class);
 
     @Around("@annotation(uji.sistem.sqlserver.advice.TrackExecutionTime)")
@@ -18,7 +21,17 @@ public class ExecutionTimeTrackerAdvice {
         long startTime = System.currentTimeMillis();
         Object object = joinPoint.proceed();
         long endTime = System.currentTimeMillis();
-        logger.info("Method name " + joinPoint.getSignature() +  " Time taken execute : " + (endTime - startTime));
+        long executionTime = endTime - startTime;
+        totalExecutionTime += executionTime;
+        totalExecutions++;
+        logger.info("Method name: {} - Time taken to execute: {} ms", joinPoint.getSignature(), executionTime);
         return object;
+    }
+
+    public double getAverageExecutionTime() {
+        if (totalExecutions == 0) {
+            return 0;
+        }
+        return (double) totalExecutionTime / totalExecutions;
     }
 }

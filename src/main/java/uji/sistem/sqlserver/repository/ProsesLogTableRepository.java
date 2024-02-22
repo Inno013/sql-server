@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import uji.sistem.sqlserver.advice.TrackExecutionTime;
 import uji.sistem.sqlserver.model.ProsesLogTable;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class ProsesLogTableRepository {
     }
 
     @Transactional
+    @TrackExecutionTime
     public void saveProsesLogTable(ProsesLogTable proseslogtable) {
         try {
             String sql = "INSERT INTO Proses_log_table (Completed, CMPNYCD, RCVNO, RX_ARRANGEMENT_NUMBER, PROCESS_LOG_COUNT,\n" +

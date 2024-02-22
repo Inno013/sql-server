@@ -2,7 +2,7 @@ package uji.sistem.sqlserver.service;
 
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import uji.sistem.sqlserver.advice.ExecutionTimeTrackerAdvice;
 import uji.sistem.sqlserver.advice.TrackExecutionTime;
 import uji.sistem.sqlserver.model.ProsesLogLine;
 import uji.sistem.sqlserver.model.ProsesLogTable;
@@ -15,17 +15,18 @@ import java.util.List;
 public class SqlServerService {
     private final ProsesLogLineRepository prosesLogLineRepository;
     private final ProsesLogTableRepository prosesLogTableRepository;
+    private final ExecutionTimeTrackerAdvice executionTimeTrackerAdvice;
 
-    public SqlServerService(ProsesLogLineRepository prosesLogLineRepository, ProsesLogTableRepository prosesLogTableRepository) {
+    public SqlServerService(ProsesLogLineRepository prosesLogLineRepository, ProsesLogTableRepository prosesLogTableRepository, ExecutionTimeTrackerAdvice executionTimeTrackerAdvice) {
         this.prosesLogLineRepository = prosesLogLineRepository;
         this.prosesLogTableRepository = prosesLogTableRepository;
+        this.executionTimeTrackerAdvice = executionTimeTrackerAdvice;
     }
 
     public List<ProsesLogLine> getAllProsesLogLine() {
         return prosesLogLineRepository.getAllProsesLogLine() ;
     }
 
-    @TrackExecutionTime
     public void saveProsesLogLine(List<ProsesLogLine> proseslogline) {
         for(ProsesLogLine logLine : proseslogline){
             prosesLogLineRepository.saveProsesLogLine(logLine);
@@ -36,11 +37,13 @@ public class SqlServerService {
         return prosesLogTableRepository.getAllProsesLogTable() ;
     }
 
-    @TrackExecutionTime
     public void saveProsesLogTable(List<ProsesLogTable> prosesLogTables) {
         for (ProsesLogTable logTable : prosesLogTables){
             prosesLogTableRepository.saveProsesLogTable(logTable);
         }
     }
 
+    public String averageExecutionTime(){
+        return String.valueOf(executionTimeTrackerAdvice.getAverageExecutionTime());
+    }
 }

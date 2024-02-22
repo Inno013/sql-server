@@ -26,9 +26,9 @@ public class SqlServerController {
             for (MultipartFile file : files){
                 service.prosesDanSaveData(file);
             }
-            return ResponseEntity.ok("Sukses Upload File");
+            return ResponseEntity.ok("Sukses Upload File ke SQL Server, Rata - rata waktu eksekusi : " + service1.averageExecutionTime() + " ms waktu dijalankan : ");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error terjadi " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error terjadi " + e.getMessage());
         }
     }
 
